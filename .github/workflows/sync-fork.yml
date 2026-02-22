@@ -1,0 +1,52 @@
+name: Sync fork
+
+on:
+  schedule:
+    - cron: '0 11 * * *'
+  workflow_dispatch:
+  repository_dispatch:
+
+jobs:
+  sync-fork:
+    runs-on: ubuntu-latest
+    outputs:
+      refs: ${{ steps.extract-tags.outputs.refs }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          fetch-tags: true
+          token: ${{ secrets.GIT_TOKEN }}
+      - name: Configure repo
+        run: |
+          git config user.name "${{ github.actor }}"
+          git config user.email "${{ github.actor_id }}+${{ github.actor }}@users.noreply.github.com"
+          git remote add upstream https://github.com/seleniumbase/SeleniumBase.git
+      - name: Extract list of new tags
+        id: extract-tags
+        run: echo refs=$(comm -3 <(git tag --list | sort) <(git ls-remote --tags upstream "refs/tags/v*" | cut -f2 | cut -c11- | sort) | awk '{print $1}' | jq -R -s -c 'split("\n")[:-1] | . + ["master"]') >> "$GITHUB_OUTPUT"
+      - name: Print refs to be processed
+        run: echo refs=${{ steps.extract-tags.outputs.refs }}
+      - name: Rebase
+        run: |
+          git fetch upstream
+          git fetch --tags --force upstream
+          #git rebase -X ours upstream/master
+          git rebase upstream/master
+          git reset --soft $(git rev-parse upstream/master)
+          git commit -m "Add sync-fork.yml and build-docker-image.yml workflows"
+          git push --force origin master
+          git push --force --tags origin master
+
+  build-push-image:
+    needs: sync-fork
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        ref: ${{ fromJSON(needs.sync-fork.outputs.refs ) }}
+    steps:
+      - name: Trigger workflow to build Docker image
+        run: gh workflow run build-docker-image.yml --repo cascandaliato/SeleniumBase --raw-field ref=${{ matrix.ref }}
+        env:
+         GH_TOKEN: ${{ github.token }}
