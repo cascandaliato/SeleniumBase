@@ -173,11 +173,11 @@ setup(
         'exceptiongroup>=1.3.1',
         'websockets~=16.1.1;python_version=="3.10"',
         'websockets>=16.1.1;python_version>="3.11"',
-        'filelock>=3.32.5',
+        'filelock>=3.32.6',
         'fasteners>=0.20',
         'mycdp>=1.4.0',
         'pynose>=1.5.5',
-        'platformdirs>=4.11.7',
+        'platformdirs>=4.11.8',
         'typing-extensions>=4.16.0',
         'sbvirtualdisplay>=1.4.0',
         'MarkupSafe>=3.0.3',
@@ -203,7 +203,7 @@ setup(
         'trio-websocket~=0.12.2',
         'wsproto~=1.3.2',
         'websocket-client~=1.9.2',
-        'selenium==4.48.0',
+        'selenium==4.49.0',
         'cssselect>=1.5.0,<2',
         'sortedcontainers==2.4.0',
         'execnet==2.1.2',
@@ -303,7 +303,7 @@ setup(
         # Required for local MCP server debugging with:
         #     mcp dev server.py
         "uv": [
-            "uv>=0.12.9"
+            "uv>=0.12.12"
         ],
     },
     packages=[

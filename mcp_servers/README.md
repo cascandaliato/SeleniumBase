@@ -113,7 +113,6 @@ Restart Claude Desktop. You should see a 🔨 tools icon indicating the server c
 * `solve_captcha`
 * `save_output`
 * `run_javascript`
-* `wait_seconds`
 
 ## 4. Connect it to Claude Code
 
@@ -151,19 +150,19 @@ claude mcp add seleniumbase-mcp -- uv run seleniumbase-mcp
 
 Tools here are grouped around a shared `selector` convention: `selector` args accept a CSS selector, or visible text (e.g. `a:contains("Sign in")`). Several near-identical one-off tools (e.g. separate click/hover/drag/wait/cookie/storage variants) have been consolidated into a single tool with a `mode`/`action`/`state`/`check` parameter, so there are fewer near-neighbor tools to disambiguate between while every underlying capability stays available.
 
-| Group             | Tool(s)                                                                                                                                          |
-| ----------------- | ------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Session           | `start_browser(url, headless, use_chromium, browser_executable_path, incognito, guest, ad_block, proxy)`, `close_browser`                        |
-| Navigation        | `navigate`, `manage_history(action: back/forward/reload/list)`, `get_page_info` (running status, url, title, origin, user agent in one call)      |
+| Group             | Tool(s)                                                                                                                                            |
+| ----------------- | -------------------------------------------------------------------------------------------------------------------------------------------------  |
+| Session           | `start_browser(url, headless, use_chromium, browser_executable_path, incognito, guest, ad_block, proxy)`, `close_browser`                          |
+| Navigation        | `navigate`, `manage_history(action: back/forward/reload/list)`, `get_page_info` (running status, url, title, origin, user agent in one call)       |
 | Finding & reading | `find_elements(selector, timeout, include_html)`, `get_content(selector, output_format: text/html/urls, include_shadow_dom)`, `get_attributes`, `check_condition(check: present/visible, text)` |
 | Interacting       | `click(selector, nth, all_matches, only_if_visible, parent_selector, timeout, scroll)`, `hover_action(selector1, selector2, action: none/click/drag_and_drop)`, `type_text(mode: fill_input/append/fast_type/set_value/clear_only)`, `select_option(by: text/value/index)`, `focus(action: scroll_to_element/focus/highlight)` |
-| Waiting           | `wait_for(state: present/visible/not_visible/absent, text)`                                                                                        |
+| Waiting           | `wait_for(state: present/visible/not_visible/absent/seconds_passed, text)`                                                                         |
 | Assertions        | `assert_condition(check: element_present/element_visible/text_visible/title/url/url_contains)`                                                     |
 | Cookies & storage | `manage_cookies(action: get_all/clear/save/load)`, `manage_storage(storage: local/session, action: get/set)`                                       |
 | Scrolling         | `scroll(direction: up/down/top/bottom, amount)`                                                                                                    |
 | Windows & tabs    | `manage_window(action: get_rect/set_rect/maximize/minimize)`, `manage_tabs(action: list/open/switch/switch_newest/close_active)`                   |
 | Captcha           | `solve_captcha`                                                                                                                                    |
-| Output & misc     | `save_output(format: screenshot/html/pdf)`, `run_javascript`, `wait_seconds`                                                                        |
+| Output & misc     | `save_output(format: screenshot/html/pdf)`, `run_javascript`,                                                                                      |
 
 ## Design notes / things to adapt for your use case
 
@@ -183,9 +182,9 @@ Tools here are grouped around a shared `selector` convention: `selector` args ac
 
 - **`check_condition` is deliberately narrow.** Its `check` parameter only accepts `"present"` or `"visible"` — there's no built-in `"count"` check anymore; call `find_elements` and read the returned `count` field instead. Passing `text` checks whether that text is visible within `selector` and takes priority over `check` when both are given — so `check_condition(text="Sign in")` behaves differently from `check_condition(check="visible")`, not as two variants of the same check. Note that an empty string for `text` (or for `wait_for`'s `selector`/`text`) is treated as not provided, since both tools now branch on truthiness rather than on `is not None`.
 
-- **`find_elements` defaults to a fast, non-raising lookup.** Its default `timeout` is 0.5 seconds (not 7, unlike most other tools here), and a failed lookup returns `{"count": 0, "matches": []}` instead of raising — there is no error string on a miss, just an empty result. Pass a longer `timeout` explicitly if the elements you're looking for may still be loading.
+- **`find_elements` defaults to a fast, non-raising lookup.** Its default `timeout` is 0.5 seconds (not 5, unlike most other tools here), and a failed lookup returns `{"count": 0, "matches": []}` instead of raising — there is no error string on a miss, just an empty result. Pass a longer `timeout` explicitly if the elements you're looking for may still be loading.
 
-- **Hover, click-after-hover, and drag-and-drop share one tool.** `hover_action(selector1, selector2, action)` replaces the earlier separate `hover` and `drag_and_drop` tools. `action="none"` hovers `selector1` only; `action="click"` hovers `selector1` then clicks `selector2` (useful for dropdown/submenu items revealed by hovering); `action="drag_and_drop"` drags `selector1` onto `selector2`. (`selector2` is required when `action` is `"click"` or `"drag_and_drop"`.)
+- **Hover, clicking after hover, and drag-and-drop share one tool.** `hover_action(selector1, selector2, action)` replaces the earlier separate `hover` and `drag_and_drop` tools. `action="none"` hovers `selector1` only; `action="click"` hovers `selector1` then clicks `selector2` (useful for dropdown/submenu items revealed by hovering); `action="drag_and_drop"` drags `selector1` onto `selector2`. (`selector2` is required when `action` is `"click"` or `"drag_and_drop"`.)
 
 - **Non-activating element actions are `focus`.** What used to be `act_on_element` is now `focus(selector, action)`, with actions `scroll_to_element` (the default), `focus`, and `highlight` — note the default action is scrolling the element into view, not focusing it. None of these actions click, type into, select from, or otherwise activate the element; use `click`, `type_text`, `select_option`, or `hover_action` for that.
 
