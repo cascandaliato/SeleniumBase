@@ -1,4 +1,5 @@
 <!-- SeleniumBase Docs -->
+<!-- mcp-name: io.github.seleniumbase/seleniumbase -->
 
 <meta property="og:site_name" content="SeleniumBase">
 <meta property="og:title" content="SeleniumBase: Stealthy Chromium Automation with Python; and E2E Testing." />
