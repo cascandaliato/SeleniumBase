@@ -827,7 +827,7 @@ class CDPMethods():
             driver = driver.cdp_base
         return self.loop.run_until_complete(driver.reset_permissions())
 
-    def get_all_urls(self, absolute=True, selector=None):
+    def get_all_urls(self, absolute=True, selector=None, timeout=None):
         """
         Convenience function that returns all links (a,link,img,script).
         :param absolute:
@@ -838,13 +838,15 @@ class CDPMethods():
          instead of the entire page.
         :return: List of URLs.
         """
+        if not timeout:
+            timeout = settings.SMALL_TIMEOUT
         if isinstance(absolute, str) and selector is None:
             # The `selector` is usually first, so the user may get confused.
             # Therefore, if first arg is string, it's probably the selector.
             selector = absolute
             absolute = True
         if selector:
-            html = self.find_element(selector).get_html()
+            html = self.find_element(selector, timeout=timeout).get_html()
             soup = self.get_beautiful_soup(html)
             page_url = self.get_current_url()
             return page_utils._get_unique_links(page_url, soup)
@@ -1876,8 +1878,11 @@ class CDPMethods():
     def get_flattened_document(self):
         return self.loop.run_until_complete(self.page.get_flattened_document())
 
-    def get_element_attributes(self, selector):
+    def get_element_attributes(self, selector, timeout=None):
+        if not timeout:
+            timeout = settings.SMALL_TIMEOUT
         selector = self.__convert_to_css_if_xpath(selector)
+        self.find_element(selector, timeout=timeout)
         return self.loop.run_until_complete(
             self.page.js_dumps(
                 """document.querySelector('%s')"""
@@ -1885,10 +1890,13 @@ class CDPMethods():
             )
         )
 
-    def get_element_attribute(self, selector, attribute):
+    def get_element_attribute(self, selector, attribute, timeout=None):
         """Find an element and return the value of an attribute.
         Raises an exception if there's no such element or attribute."""
-        attributes = self.get_element_attributes(selector)
+        if not timeout:
+            timeout = settings.SMALL_TIMEOUT
+        selector = self.__convert_to_css_if_xpath(selector)
+        attributes = self.get_element_attributes(selector, timeout=timeout)
         with suppress(Exception):
             return attributes[attribute]
         locate = ' %s="' % attribute
@@ -3685,8 +3693,10 @@ class CDPMethods():
         with suppress(Exception):
             self.loop.run_until_complete(self.page.evaluate(js_code))
 
-    def scroll_into_view(self, selector):
-        self.find_element(selector).scroll_into_view()
+    def scroll_into_view(self, selector, timeout=None):
+        if not timeout:
+            timeout = settings.SMALL_TIMEOUT
+        self.find_element(selector, timeout=timeout).scroll_into_view()
         self.loop.run_until_complete(self.page.wait(0.05))
 
     def scroll_to_y(self, y):
