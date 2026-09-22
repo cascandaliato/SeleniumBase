@@ -4,7 +4,7 @@
 
 ### The [SeleniumBase](https://github.com/seleniumbase/SeleniumBase) MCP server provides stealthy browser automation over the [Model Context Protocol](https://modelcontextprotocol.io) for MCP clients.
 
-This server, (located in `server.py`), uses SeleniumBase's [Pure CDP Mode](https://github.com/seleniumbase/SeleniumBase/blob/master/help_docs/cdp_mode_methods.md) (`seleniumbase.sb_cdp.Chrome`), where the browser is driven entirely over the Chrome DevTools Protocol, and there is no WebDriver in the loop at all, which makes it SeleniumBase's stealthiest mode. CAPTCHA-solving is included via the `solve_captcha()` method!
+This server, (located in `server.py`), uses SeleniumBase's [Pure CDP Mode](https://github.com/seleniumbase/SeleniumBase/blob/master/help_docs/cdp_mode_methods.md) (`seleniumbase.sb_cdp.Chrome`), where the browser is driven entirely over the Chrome DevTools Protocol, and there is no WebDriver in the loop at all, which makes it SeleniumBase's stealthiest mode. CAPTCHA-solving is available through `solve_captcha()`.
 
 Other SeleniumBase automation styles, (such as `Driver()` and `SB()`),  have their own MCP servers in [seleniumbase/seleniumbase-mcp](https://github.com/seleniumbase/seleniumbase-mcp).
 
@@ -37,15 +37,23 @@ uv sync
 
 Pure CDP Mode doesn't use WebDriver, so no `chromedriver` download is needed... just a working Chrome/Chromium install.
 
-(No `uv`? `python3 -m venv venv && pip install -r requirements.txt` works too. `requirements.txt` installs the local SeleniumBase checkout via `-e .` the same way. Substitute `python server.py` for `uv run seleniumbase-mcp` everywhere below, and use absolute `venv/bin/python` + script path in your MCP client config instead of the path-free options.)
+(If you don't want to use `uv`, you can use a standard Python virtual environment instead: `python3 -m venv venv && pip install -r requirements.txt` works too. `requirements.txt` installs the local SeleniumBase checkout via `-e .` the same way. Substitute `python server.py` for `uv run seleniumbase-mcp` everywhere below, and use absolute `venv/bin/python` + script path in your MCP client config instead of the path-free options.)
+
+Without `uv`, you can directly run the `seleniumbase-mcp` command to start the server after `pip`-installing `seleniumbase`.
 
 ## 2. Try it standalone (optional sanity check)
+
+```bash
+mcp dev server.py
+```
+
+Or if using `uv`:
 
 ```bash
 uv run mcp dev server.py
 ```
 
-That opens the MCP Inspector, where you can test commands ("Tools"). Ctrl+C to exit. Next step is wiring it into a client.
+That opens the MCP Inspector, where you can test commands ("Tools"). Use Ctrl+C to exit from the terminal. Next step is wiring it into a client harness.
 
 ## 3. Connect it to Claude Desktop
 
@@ -117,15 +125,15 @@ Restart Claude Desktop. You should see a 🔨 tools icon indicating the server c
 ## 4. Connect it to Claude Code
 
 This folder's `.mcp.json` is checked in and ready to use as-is.
-No path editing is required because `uv run seleniumbase-mcp` resolves this project from `pyproject.toml` in the current directory:
+No path editing is required because `seleniumbase-mcp` resolves this project from `pyproject.toml` in the current directory:
 
 ```json
 {
   "mcpServers": {
     "seleniumbase-mcp": {
       "type": "stdio",
-      "command": "uv",
-      "args": ["run", "seleniumbase-mcp"]
+      "command": "seleniumbase-mcp",
+      "args": []
     }
   }
 }
@@ -134,7 +142,7 @@ No path editing is required because `uv run seleniumbase-mcp` resolves this proj
 **The `.mcp.json` file helps clients connect to the MCP server.**
 
 1. Claude Code auto-loads `.mcp.json` from whatever directory you launch `claude` in.
-2. `uv run seleniumbase-mcp` needs `pyproject.toml` to be discoverable from the current directory. That resolves cleanly when `.mcp.json` and `pyproject.toml` sit next to each other.
+2. `seleniumbase-mcp` needs `pyproject.toml` to be discoverable from the current directory. That resolves cleanly when `.mcp.json` and `pyproject.toml` sit next to each other.
 
 Run `claude` from inside `mcp_servers/` or the root folder to get it auto-loaded.
 
