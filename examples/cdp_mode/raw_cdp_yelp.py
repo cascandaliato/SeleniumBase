@@ -1,9 +1,11 @@
 import json
 from seleniumbase import sb_cdp
 
-sb = sb_cdp.Chrome()
+sb = sb_cdp.Chrome(guest=True)
 sb.goto("https://www.yelp.com/")
-sb.sleep(3)
+sb.sleep(1.6)
+sb.solve_captcha()
+sb.sleep(1.8)
 restaurants_menu = 'button[aria-label*="Restaurants"]'
 cafes = 'span:contains("Cafes")'
 sb.wait_for_element(restaurants_menu)
