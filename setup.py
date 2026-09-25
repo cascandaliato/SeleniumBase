@@ -41,7 +41,7 @@ if sys.argv[-1] == "publish":
             print("You are currently using Python %s\n" % current_ver)
             sys.exit()
         print("\n*** Checking code health with flake8:\n")
-        os.system("python -m pip install 'flake8==7.3.0'")
+        os.system("python -m pip install 'flake8==7.4.1'")
         flake8_status = os.system(
             "flake8 --exclude=recordings,temp,venv,.venv"
         )
