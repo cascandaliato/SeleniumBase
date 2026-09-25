@@ -41,7 +41,7 @@ if sys.argv[-1] == "publish":
             print("You are currently using Python %s\n" % current_ver)
             sys.exit()
         print("\n*** Checking code health with flake8:\n")
-        os.system("python -m pip install 'flake8==7.3.0'")
+        os.system("python -m pip install 'flake8==7.4.1'")
         flake8_status = os.system(
             "flake8 --exclude=recordings,temp,venv,.venv"
         )
@@ -173,11 +173,10 @@ setup(
         'exceptiongroup>=1.3.1',
         'websockets~=16.1.1;python_version=="3.10"',
         'websockets>=16.1.1;python_version>="3.11"',
-        'filelock>=4.0.1',
+        'filelock>=4.0.3',
         'fasteners>=0.20',
         'mycdp>=1.4.0',
         'pynose>=1.5.5',
-        'platformdirs>=4.11.12',
         'typing-extensions>=4.16.0',
         'sbvirtualdisplay>=1.4.0',
         'MarkupSafe>=3.0.3',
@@ -219,7 +218,7 @@ setup(
         'pytest-xdist==3.8.0',
         'parameterized==0.9.0',
         'behave==1.2.6',  # Newer ones had issues
-        'soupsieve~=2.9.2',
+        'soupsieve~=2.10.0',
         'beautifulsoup4~=4.15.0',
         'pyotp~=2.10.0',
         'python-xlib==0.33;platform_system=="Linux"',
@@ -246,10 +245,10 @@ setup(
         # pip install -e .[flake8]
         # Usage: flake8
         "flake8": [
-            'flake8==7.3.0',
+            'flake8==7.4.1',
             'mccabe==0.7.0',
-            'pyflakes==3.4.0',
-            'pycodestyle==2.14.0',
+            'pyflakes==4.0.0',
+            'pycodestyle==2.15.0',
         ],
         # pip install -e .[mcp]
         # (Adds the "seleniumbase-mcp" console script: An MCP server that
@@ -303,7 +302,7 @@ setup(
         # Required for local MCP server debugging with:
         #     mcp dev server.py
         "uv": [
-            "uv>=0.12.17"
+            "uv>=0.12.18"
         ],
     },
     packages=[
