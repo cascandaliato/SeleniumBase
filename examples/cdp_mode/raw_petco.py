@@ -15,12 +15,15 @@ with SB(uc=True, test=True, guest=True) as sb:
     sb.press_keys(search_box, query)
     sb.sleep(1.2)
     sb.click('button[data-testid="standard-search-click"]')
-    sb.sleep(3.6)
+    sb.sleep(3.4)
+    result_item = 'div[data-track-product-sku]'
+    sb.wait_for_element(result_item)
+    sb.sleep(0.6)
     print('*** Petco Search for "%s":' % query)
     print('    (Results must contain "%s".)' % required_text)
     unique_item_text = []
     soup = sb.get_beautiful_soup()
-    items = soup.select('[data-track-widget="ProductListing"]')
+    items = soup.select(result_item)
     for item in items:
         item_text = item.get_text()
         if required_text.lower() in item_text.lower():
