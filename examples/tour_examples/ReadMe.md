@@ -2,9 +2,11 @@
 
 <h2><a href="https://github.com/seleniumbase/SeleniumBase/"><img src="https://seleniumbase.github.io/img/logo6.png" title="SeleniumBase" width="32"></a> 🌏 Interactive Product Tours 🚎</h2>
 
+> **("Tour Mode" / "Tours")**
+
 SeleniumBase Tours utilize 5 JavaScript libraries for creating interactive walkthroughs on **any website**:
 
-> **[IntroJS](https://introjs.com/)**, **[Bootstrap Tour](http://bootstraptour.com/)**, **[DriverJS](https://kamranahmed.info/driver.js/)**, **[Shepherd](https://shepherdjs.dev/)**, and **[Hopscotch](https://linkedinattic.github.io/hopscotch/)**.
+> **[IntroJS](https://introjs.com/)**, **[Bootstrap Tour](http://bootstraptour.com/)**, **[DriverJS](https://driverjs.com/)**, **[Shepherd](https://shepherdjs.dev/)**, and **[Hopscotch](https://linkedinattic.github.io/hopscotch/)**.
 
 <b>A tour demo: (with autoplay)</b>
 
@@ -17,21 +19,18 @@ cd examples/tour_examples
 pytest maps_introjs_tour.py --interval=1
 ```
 
-<b>Here's a longer version:</b>
-
-<img src="https://seleniumbase.github.io/cdn/gif/google_tour_4.gif" title="SeleniumBase Tour of Google"><br>
-
-[SeleniumBase google_tour.py](https://github.com/seleniumbase/SeleniumBase/blob/master/examples/tour_examples/google_tour.py)
-
-```zsh
-cd examples/tour_examples
-pytest google_tour.py
-```
-
-> (From [GitHub => SeleniumBase/examples/tour_examples](https://github.com/seleniumbase/SeleniumBase/blob/master/examples/tour_examples))
+> (From [SeleniumBase/examples/tour_examples](https://github.com/seleniumbase/SeleniumBase/blob/master/examples/tour_examples))
 
 
 ### Creating a new tour:
+
+#### To create a tour utilizing the IntroJS Library, use one of the following:
+
+`self.create_introjs_tour()`
+
+OR
+
+`self.create_tour(theme="introjs")`
 
 #### To create a tour utilizing the Shepherd Library, use one of the following:
 
@@ -50,14 +49,6 @@ You can pass a custom theme to change the look & feel of Shepherd tours. Valid t
 OR
 
 `self.create_tour(theme="bootstrap")`
-
-#### To create a tour utilizing the IntroJS Library, use one of the following:
-
-`self.create_introjs_tour()`
-
-OR
-
-`self.create_tour(theme="introjs")`
 
 #### To create a tour utilizing the DriverJS Library, use one of the following:
 
@@ -211,4 +202,4 @@ OR
 
 <img src="https://seleniumbase.github.io/cdn/gif/driverjs_tour_2.gif" title="SeleniumBase Tour of Google"><br>
 
-<h3 align="left"><img src="https://seleniumbase.github.io/cdn/img/sb_logo_b.png" alt="SeleniumBase" width="320" /></h3>
+<h3 align="left"><img src="https://seleniumbase.github.io/cdn/img/sb_logo_b.png" alt="SeleniumBase" width="360" /></h3>
