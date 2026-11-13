@@ -18,6 +18,6 @@ class MyTourClass(BaseCase):
             "This is not the page you're looking for.", 'img[alt*="404"]'
         )
         self.add_tour_step("<b>Have a great day!</b>", title="😃 ☀️ 😁")
-        self.add_tour_step("<b>And may the Force be with you!</b>", title="⭐")
+        self.add_tour_step("<b>And may The Force be with you!</b>", title="⭐")
         self.export_tour(filename="octocat_tour.js")
         self.play_tour()

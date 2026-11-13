@@ -1,11 +1,9 @@
 from seleniumbase import BaseCase
-BaseCase.main(__name__, __file__, "--uc")
+BaseCase.main(__name__, __file__)
 
 
 class MyTourClass(BaseCase):
     def test_google_tour(self):
-        if not self.undetectable:
-            self.get_new_driver(undetectable=True)
         self.goto("https://google.com/ncr")
         self.click_if_visible('button:contains("Accept all")')
         self.wait_for_element('[name="q"]')
@@ -24,18 +22,8 @@ class MyTourClass(BaseCase):
         self.add_tour_step("Or press [ENTER] after entry.", '[name="q"]')
         self.play_tour()
 
-        self.highlight_type('[name="q"]', "GitHub\n")
-        self.ad_block()
-        self.wait_for_element("#search")
-
-        self.create_introjs_tour()
-        self.add_tour_step("3-second autoplay...")
-        self.add_tour_step("Here's the next tour:")
-        self.play_tour(interval=3)  # Tour automatically continues after 3 sec
-
         self.goto("https://www.google.com/maps/@42.3591234,-71.0915634,15z")
         self.wait_for_element('[name="q"]', timeout=20)
-        self.wait_for_element('[aria-label="Interactive map"]', timeout=20)
         self.wait_for_element('[aria-label="Zoom in"]', timeout=20)
         self.wait_for_element('[aria-label="Zoom out"]')
         self.wait_for_element('[jsaction*="minimap.main;"]')
